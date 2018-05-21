@@ -1,9 +1,8 @@
 package com.example.maksym.cinemacalendar;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -57,7 +56,7 @@ public class LogoActivity extends AppCompatActivity {
                 linkEl = filmElement.select("a").attr("href");   // ссылка на фильм
 
                 movieListInfo.add(new MovieInfo(nameEl,dateEl,imgEl,linkEl));
-                Log.d(LOG,nameEl + " " + dateEl + " " + imgEl + " " + linkEl);
+//                Log.d(LOG,nameEl + " " + dateEl + " " + imgEl + " " + linkEl);
 
             }
 
