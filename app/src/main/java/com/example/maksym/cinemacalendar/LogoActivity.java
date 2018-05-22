@@ -1,8 +1,11 @@
 package com.example.maksym.cinemacalendar;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,25 +24,16 @@ public class LogoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_view_movie);
+        setContentView(R.layout.activity_logo);
 
         new ParseMovieTask().execute();
-    }
-
-    class ParseMovieTask extends AsyncTask<Void,Void,Void>{
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            ParseMovie();
-            return null;
-        }
     }
 
     private void ParseMovie (){
         try {
 
 
-            String nameEl,dateEl,imgEl,linkEl;
+            String nameEl, dateEl, imgEl, linkEl, allInfoEl, infoEl, actorsEl, rateEl;
 
             Document doc = Jsoup.connect("https://kino-teatr.ua/films-near.phtml").get();
             Elements filmElements = doc.select("div[id=content]>" +
@@ -50,13 +44,17 @@ public class LogoActivity extends AppCompatActivity {
 
             for(Element filmElement : filmElements) {
 
-                nameEl = filmElement.select("div[id=searchItemTitle]>a[href]").text();   // получаем название фильма
-                dateEl = filmElement.select("div[id=premiereBigDate]").text();   // получаем дату
-                imgEl = filmElement.select("img").attr("src");   // ссылка на картинку
-                linkEl = filmElement.select("a").attr("href");   // ссылка на фильм
+                nameEl = filmElement.select("div[id=searchItemTitle]>a[href]").text(); // получаем название фильма
+                dateEl = filmElement.select("div[id=premiereBigDate]").text(); // получаем дату
+                imgEl = filmElement.select("img").attr("src");
+                linkEl = filmElement.select("a").attr("href");
+                allInfoEl = filmElement.select("p[class=searchItemText]").text();
+                infoEl = ("201" + allInfoEl.replaceAll(".* 201", "").replaceAll(" Режиссеры.*", "")); //информация о фильме
+                actorsEl = ("Актеры:" + allInfoEl.replaceAll(".* Актеры:", "").replaceAll("    Этот.*", "")); //информация о фильме
+                rateEl = allInfoEl.split(" 201", 2)[0]; // рейтинг
 
-                movieListInfo.add(new MovieInfo(nameEl,dateEl,imgEl,linkEl));
-//                Log.d(LOG,nameEl + " " + dateEl + " " + imgEl + " " + linkEl);
+                movieListInfo.add(new MovieInfo(nameEl, rateEl, dateEl, imgEl, linkEl, infoEl, actorsEl));
+                Log.d(LOG, nameEl + " " + dateEl + " " + imgEl + " " + linkEl + " " + infoEl + " " + actorsEl + " " + rateEl);
 
             }
 
@@ -64,6 +62,24 @@ public class LogoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    class ParseMovieTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ParseMovie();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Intent intent = new Intent(LogoActivity.this, MainActivity.class);
+            intent.putParcelableArrayListExtra("movie", (ArrayList<? extends Parcelable>) movieListInfo);
+            startActivity(intent);
+            finish();
+        }
     }
 
 }
