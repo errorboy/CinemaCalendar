@@ -24,14 +24,13 @@ public class LogoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_logo);
+        setContentView(R.layout.activity_full_movie);
 
         new ParseMovieTask().execute();
     }
 
     private void ParseMovie (){
         try {
-
 
             String nameEl, dateEl, imgEl, linkEl, allInfoEl, infoEl, actorsEl, rateEl;
 
