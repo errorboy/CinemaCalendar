@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.widget.ProgressBar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,18 +20,28 @@ public class LogoActivity extends AppCompatActivity {
 
     private static final String LOG = "LOG";
     private List<MovieInfo> movieListInfo = new ArrayList<>();
+    private ProgressBar progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_full_movie);
+        setContentView(R.layout.activity_logo);
+        progressBar = findViewById(R.id.progressBar);
+
 
         new ParseMovieTask().execute();
+
+
     }
 
+
     private void ParseMovie (){
+        ProgressBar logoBar = findViewById(R.id.logoBar);
+
         try {
 
+            int count = 0;
             String nameEl, dateEl, imgEl, linkEl, allInfoEl, infoEl, actorsEl, rateEl;
 
             Document doc = Jsoup.connect("https://kino-teatr.ua/films-near.phtml").get();
@@ -39,7 +49,12 @@ public class LogoActivity extends AppCompatActivity {
                     "div[id=mainContent]>" +
                     "div[id=leftContent]>" +
                     "div[id=news_page]>" +
-                    "div[id=searchItemFilms]"); // получаю нужный блоку
+                    "div[id=searchItemFilms]"); // получаю нужный блок
+
+//            Log.d(LOG, String.valueOf(filmElements.size()));
+            logoBar.setMax(filmElements.size());
+
+//            Log.d(LOG, String.valueOf(logoBar.getMax()));
 
             for(Element filmElement : filmElements) {
 
@@ -53,13 +68,19 @@ public class LogoActivity extends AppCompatActivity {
                 rateEl = allInfoEl.split(" 201", 2)[0]; // рейтинг
 
                 movieListInfo.add(new MovieInfo(nameEl, rateEl, dateEl, imgEl, linkEl, infoEl, actorsEl));
-                Log.d(LOG, nameEl + " " + dateEl + " " + imgEl + " " + linkEl + " " + infoEl + " " + actorsEl + " " + rateEl);
+//                Log.d(LOG, nameEl + " " + dateEl + " " + imgEl + " " + linkEl + " " + infoEl + " " + actorsEl + " " + rateEl);
+
+                logoBar.setProgress(count);
+
+//                Log.d(LOG, String.valueOf(count));
+                count++;
 
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 

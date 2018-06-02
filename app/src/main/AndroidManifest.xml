@@ -22,6 +22,10 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".FullMovieActivity"></activity>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:process=":remote" />
     </application>
 
 </manifest>

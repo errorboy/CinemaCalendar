@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +52,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int itemPosition = recyclerView.getChildLayoutPosition(v);
-                Log.d(MY_LOG, String.valueOf(itemPosition));
+//                Log.d(MY_LOG, String.valueOf(itemPosition));
                 Intent intentMovieUrl = new Intent(MainActivity.this, FullMovieActivity.class);
                 intentMovieUrl.putExtra("movieUrl", movieIfs.get(itemPosition).getUrl());
+                intentMovieUrl.putExtra("name", movieIfs.get(itemPosition).getName());
+                intentMovieUrl.putExtra("image", movieIfs.get(itemPosition).getImgUrl());
+                intentMovieUrl.putExtra("date", movieIfs.get(itemPosition).getDate());
                 startActivity(intentMovieUrl);
             }
         };
